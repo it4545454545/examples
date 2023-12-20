@@ -7,9 +7,12 @@ public class RemoveMultipleElements {
         for(int i=0; i<199999999; i++){
             oldArray.add(i);
         }
-// USE ONE AND COMMENT ANOTHER METHOD
 
-       deleteViaRemove(oldArray,333333,333444);
+        int startIndex = 333333;
+        int endIndex = 333444;
+
+        // USE ONE AND COMMENT ANOTHER METHOD
+       deleteViaRemove(oldArray,startIndex,endIndex);
 //        10508 ms
 //        elements deleted: 112
 
