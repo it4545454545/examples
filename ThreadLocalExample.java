@@ -2,34 +2,27 @@ public class ThreadLocalExample {
     private static ThreadLocal<UserContext> userContext = new ThreadLocal<>();
 
     public static void main(String[] args) {
-        // Запускаем два потока, каждый из которых изменяет UserContext.
+        // Запускаем первый поток
         new Thread(() -> {
             userContext.set(new UserContext("Thread 1 Info"));
-            System.out.println("Thread 1: " + userContext.get().getUserInfo());
+            try {
+                System.out.println("Thread 1: " + userContext.get().getUserInfo());
+            } finally {
+                userContext.remove(); // Удаляем значение ThreadLocal после использования
+            }
         }).start();
 
+        // Запускаем второй поток
         new Thread(() -> {
             userContext.set(new UserContext("Thread 2 Info"));
-            System.out.println("Thread 2: " + userContext.get().getUserInfo());
+            try {
+                System.out.println("Thread 2: " + userContext.get().getUserInfo());
+            } finally {
+                userContext.remove(); // Удаляем значение ThreadLocal после использования
+            }
         }).start();
 
         NonThreadLocalExample.main(new String[]{});
-    }
-}
- class UserContext {
-    private String userInfo;
-
-    public UserContext(String info) {
-        this.userInfo = info;
-    }
-
-    // Getters and setters
-    public String getUserInfo() {
-        return userInfo;
-    }
-
-    public void setUserInfo(String userInfo) {
-        this.userInfo = userInfo;
     }
 }
 class NonThreadLocalExample {
@@ -58,5 +51,21 @@ class NonThreadLocalExample {
             System.out.println("NonThreadLocalExample Thread 2: " + userContext.getUserInfo());
             // Может вывести "Thread 1 Info" или "Thread 2 Info" в зависимости от тайминга
         }).start();
+    }
+}
+class UserContext {
+    private String userInfo;
+
+    public UserContext(String info) {
+        this.userInfo = info;
+    }
+
+    // Getters and setters
+    public String getUserInfo() {
+        return userInfo;
+    }
+
+    public void setUserInfo(String userInfo) {
+        this.userInfo = userInfo;
     }
 }
